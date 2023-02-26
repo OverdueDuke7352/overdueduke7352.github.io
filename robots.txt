@@ -11,4 +11,4 @@ Allow: /jade/
 # Disallow: /css/
 # Disallow: /fancybox/
 
-Sitemap: https://augustushsu.github.io/sitemap.xml
+Sitemap: https://overdueduke7352.github.io/sitemap.xml
