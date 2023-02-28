@@ -2,9 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://overdueduke7352.github.io/reads/</loc>
+    <loc>https://overdueduke7352.github.io/jade/reads/</loc>
     
-    <lastmod>2023-02-27</lastmod>
+    <lastmod>2023-02-28</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -40,7 +40,7 @@
 
   <url>
     <loc>https://overdueduke7352.github.io/</loc>
-    <lastmod>2023-02-27</lastmod>
+    <lastmod>2023-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -48,7 +48,14 @@
   
   <url>
     <loc>https://overdueduke7352.github.io/tags/%E9%96%B1%E5%BE%8C%E5%BF%83%E5%BE%97/</loc>
-    <lastmod>2023-02-27</lastmod>
+    <lastmod>2023-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://overdueduke7352.github.io/tags/%E7%8E%89%E5%B1%B1%E5%AD%B8/</loc>
+    <lastmod>2023-02-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
