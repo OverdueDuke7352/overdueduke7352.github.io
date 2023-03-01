@@ -5,7 +5,7 @@ Allow: /archives/
 Allow: /categories/
 Allow: /tags/
 Allow: /about/ 
-Allow: /jade/
+Allow: /jade/reads.md/
  
 # Disallow: /js/
 # Disallow: /css/
