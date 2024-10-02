@@ -431,7 +431,7 @@
             let endTime = new Date().getTime();
             let timeTaken = (endTime - startTime) / 1000;
 
-            if (timeTaken < 0) {
+            if (timeTaken < 2) {
                 showTooFast();
             } else if (answer === correctAnswers[questionNumber]) {
                 if (questionNumber < 10) {
