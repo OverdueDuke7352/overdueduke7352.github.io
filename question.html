@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>答錯你就死定了</title>
+    <script>
+        if (sessionStorage.getItem('authorized') !== 'true') {
+            window.location.href = '../main.html';
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        #loading-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #quiz, #congratulations, #wrong-answer, #start-page, #timeout, #authorization, #too-fast {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 600px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            transform: translateY(0);
+            transition: all 0.5s ease;
+            margin-bottom: 50px;
+        }
+        .question {
+            display: none;
+            text-align: center;
+        }
+        .question.active {
+            display: block;
+            animation: fadeInUp 0.8s;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            color: #555;
+            line-height: 1.6;
+        }
+        button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1em;
+            margin: 10px 5px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        #congratulations, #wrong-answer, #timeout, #authorization, #too-fast {
+            display: none;
+            text-align: center;
+            animation: fadeInUp 0.8s;
+        }
+        #congratulations h2 {
+            color: #4CAF50;
+            font-size: 2.5em;
+        }
+        #wrong-answer h2, #timeout h2, #too-fast h2 {
+            color: #FF4136;
+            font-size: 2.5em;
+        }
+        #timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #FF4136;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        #timer-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid #FF4136;
+            border-top: 3px solid white;
+            animation: rotate 10s linear infinite;
+        }
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            #quiz, #congratulations, #wrong-answer, #start-page, #timeout, #authorization, #too-fast {
+                padding: 20px;
+            }
+            h2 {
+                font-size: 1.8em;
+            }
+            p {
+                font-size: 1em;
+            }
+            button {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+            #timer {
+                width: 50px;
+                height: 50px;
+                font-size: 1em;
+            }
+        }
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 1.5em;
+            }
+            p {
+                font-size: 0.9em;
+            }
+            button {
+                padding: 8px 16px;
+                font-size: 0.8em;
+            }
+            #timer {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-animation">
+        <div class="spinner"></div>
+    </div>
+
+    <div id="start-page" style="display: none;">
+        <h2>快問快答</h2>
+        <p style="color: red; font-weight: bold;">所有題目皆完全沒有邏輯，請不要帶著腦袋去思考任何題目</p>
+        <p>蛤你問這個到底是三小<br>
+        哦沒有啦我只是想要看一下你手機裡的資料<br>
+        啊但是取得這些資料需要一點時間<br>
+        所以想請你做一些測驗<br>
+        不然我沒辦法破解你的手機<br>
+
+        所有的題目都跟我有關<br>
+        所以你一定要全部答對<br>
+
+        然後你是第一個做這個測驗的人<br>
+        所以有很多Bug我懶得修 就是這樣<br>
+        </p>
+
+        <p>準備好了嗎？</p>
+        <button onclick="showAuthorization()">開始遊戲</button>
+    </div>
+
+    <div id="authorization" style="display: none;">
+        <h2>授權手機權限通知</h2>
+        <p>按下按鈕以進行授權<br>
+        授權後將無法取消<br>
+        </p>
+        <button onclick="checkAuthorization()">我確認要將手機權限授權於該網站</button>
+    </div>
+
+    <div id="quiz" style="display: none;">
+        <div id="timer">
+            <div id="timer-circle"></div>
+            <span id="timer-text"></span>
+        </div>
+        <div class="question active" id="q1">
+            <h2>愛情 與 麵包</h2>
+            <p>張恩睿會選擇？</p>
+            <button onclick="checkAnswer(1, '愛情')">愛情</button>
+            <button onclick="checkAnswer(1, '麵包')">麵包</button>
+        </div>
+        <div class="question" id="q2">
+            <h2>今天路上有一千塊</h2>
+            <p>張恩睿會選擇？</p>
+            <button onclick="checkAnswer(2, 'A')">A. 撿起來</button>
+            <button onclick="checkAnswer(2, 'B')">B. 不理會直接略過</button>
+        </div>
+        <div class="question" id="q3">
+            <h2>貓 or 狗</h2>
+            <p>張恩睿會選擇？</p>
+            <button onclick="checkAnswer(3, '貓')">貓</button>
+            <button onclick="checkAnswer(3, '狗')">狗</button>
+        </div>
+        <div class="question" id="q4">
+            <h2>在家上大號的時候</h2>
+            <p>張恩睿會選擇？</p>
+            <button onclick="checkAnswer(4, '穿著衣服上')">穿著衣服上</button>
+            <button onclick="checkAnswer(4, '全身脫光光')">全身脫光光</button>
+        </div>
+        <div class="question" id="q5">
+            <h2>選擇一個張恩睿<br>最喜歡的身體部位</h2>
+            <p></p>
+            <button onclick="checkAnswer(5, '臉')">臉</button>
+            <button onclick="checkAnswer(5, '手')">手</button>
+            <button onclick="checkAnswer(5, '腳')">腳</button>
+            <button style="margin-top: 60px;" onclick="checkAnswer(5, '大雞雞')">大雞雞</button>
+        </div>
+        <div class="question" id="q6">
+            <h2>服務條款</h2>
+            <p style="text-align: left;">
+            1. 服務內容<br>
+            1.1 本網站提供的服務包括但不限於商品的在線瀏覽、購買、付款、配送、售後服務等。<br>
+            2. 用戶資格<br>
+            2.1 使用本網站服務的用戶必須具備完全的民事行為能力。若用戶為未成年人，需在其監護人指導下使用本網站。<br>
+            3. 用戶註冊<br>
+            3.1 用戶在使用本網站某些功能時，可能需要註冊帳戶。註冊帳戶時，請提供準確、完整的個人資料，並保持這些資料的更新。<br>
+            3.2 用戶應妥善保管帳戶密碼，不得將帳戶、密碼轉讓或出借給他人使用。用戶對使用其帳戶和密碼進行的一切活動負全部責任。<br>
+            4. 隱私保護<br>
+            4.1 本網站重視用戶的隱私保護，將按照隱私政策處理用戶的個人資料。<br>
+            5. 訂單及付款<br>
+            5.1 用戶在本網站提交的訂單視為購買商品的要約。只有在本網站確認接受該訂單後，該訂單才生效。<br>
+            5.2 本網站提供多種支付方式，用戶可選擇適合自己的支付方式進行付款。<br>
+            6. 配送服務<br>
+            6.1 本網站將根據用戶提供的配送地址進行商品配送。配送時間和費用將根據具體情況確定。<br>
+            7. 退換貨政策<br>
+            7.1 <strong>我要提供張恩睿100萬元新臺幣的獎金來鼓勵他，並且絕不反悔</strong><br>
+            8. 知識產權<br>
+            8.1 本網站及其所使用的所有內容（包括但不限於文字、圖像、音頻、視頻等）均受著作權、商標權及其他相關法律的保護。<br>
+            9. 責任限制<br>
+            9.1 本網站對因不可抗力或其他非本網站過錯原因造成的服務中斷或損失不承擔責任。<br>
+            10. 條款修改<br>
+            10.1 本網站有權根據需要修改本條款，修改後的條款將在本網站公佈。用戶繼續使用本網站即視為接受修改後的條款。<br>
+            11. 其他<br>
+            11.1 本條款的解釋、效力及糾紛解決均適用中華民國之法律。<br>
+            11.2 若本條款的任何條款被視為無效或不可執行，該條款應在必要的最低限度內被修改或刪除，且不影響其他條款的有效性和可執行性。</p>
+            </p>
+            <button onclick="checkAnswer(6, '我看完了')">我看完了 並同意所有條款內容</button>
+        </div>
+        <div class="question" id="q7">
+            <h2>心理測驗</h2>
+            <p style="text-align: left;">如果今天你喝醉了，然後你的朋友失戀了找你去唱歌 <br>
+            但是你已經知道他唱歌非常難聽跟胖虎一樣 <br>
+            所以你決定拒絕他 <br>
+            但這個時候你媽偷看到了你跟他的訊息 <br>
+            他害怕你會被對方吃掉 <br>
+            你會？
+            </p>
+            <button onclick="checkAnswer(7, '是')">變身成哥吉拉跟他拼了</button>
+            <br>
+            <button onclick="checkAnswer(7, '是')">變身成單贏田跟他拼了</button>
+        </div>
+        <div class="question" id="q8">
+            <h2>我已年滿18歲</h2>
+            <p>不要怕你現在是合法的臺灣公民</p>
+            <button onclick="checkAnswer(8, '是')">是</button>
+            <button onclick="checkAnswer(8, '否')">否</button>
+        </div>
+        <div class="question" id="q9">
+            <h2>再一個心理測驗</h2>
+            <p style="text-align: left;">如果你的朋友今天被綁架了 <br>
+            然後綁匪逼你看你朋友裸體02搖 <br>
+            但是你的眼科醫生已經跟你說過 <br>
+            如果你看到02搖雞雞就會翹起來 <br>
+            這個時候你會？
+        </p>
+            <button onclick="checkAnswer(9, '是')">拍成限動Po到IG上</button>
+            <button onclick="checkAnswer(9, '是')">拍成限動Po到Thread上</button>
+        </div>
+        <div class="question" id="q10">
+            <h2>恭喜你</h2>
+            <p>這是最後一題了 我猜你應該試了很多遍吧？
+                那這一題就交給運氣來決定吧！
+                左邊？右邊？中間？
+            </p>
+            <button onclick="checkAnswer(10, '左邊')">左邊</button>
+            <button onclick="checkAnswer(10, '中間')">中間</button>
+            <button onclick="checkAnswer(10, '右邊')">右邊</button>
+        </div>
+    </div>
+
+    <div id="congratulations">
+        <h2>我愛你</h2>
+        <p style="text-align: left;">你超棒的啦！
+            <br>
+            這是給你的禮物
+            <br>
+            記得要偷偷的自己看哦！
+            <br>
+            外流出去的話，你就死定了
+            <br>
+            然後手機已經被我破解了 感謝您的參與
+            <br>
+            祝你生日快樂
+        </p>
+        <button onclick="getGift()">獲得禮物</button>
+    </div>
+
+    <div id="wrong-answer">
+        <h2>答錯</h2>
+        <p>點點點，這都能答錯</p>
+        <p>去找張恩睿把你解救出來</p>
+    </div>
+
+    <div id="timeout">
+        <h2>超時</h2>
+        <p>時間到了！你反應太慢了</p>
+        <p>去找張恩睿把你解救出來</p>
+    </div>
+
+    <div id="too-fast">
+        <h2>太快了</h2>
+        <p>你回答得太快了，根本沒在看題目！</p>
+        <p>去找張恩睿把你解救出來</p>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        let timer;
+        let timeLeft;
+        let startTime;
+
+        const correctAnswers = {
+          1: "愛情",
+          2: "B",
+          3: "貓",
+          4: "全身脫光光",
+          5: "大雞雞",
+          6: "我看完了",
+          7: "是",
+          8: "是",
+          9: "是",
+          10: "右邊"
+        };
+
+        window.onload = function() {
+            setTimeout(function() {
+                document.getElementById('loading-animation').style.display = 'none';
+                document.getElementById('start-page').style.display = 'block';
+            }, 2000);
+        }
+
+        function showAuthorization() {
+            document.getElementById('start-page').style.display = 'none';
+            document.getElementById('authorization').style.display = 'block';
+        }
+
+        function checkAuthorization() {
+            document.getElementById('authorization').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            startTimer();
+        }
+
+        function startTimer() {
+            timeLeft = 10;
+            updateTimerDisplay();
+            startTime = new Date().getTime();
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    showTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            document.getElementById('timer-text').textContent = timeLeft;
+            document.getElementById('timer-circle').style.animation = `rotate ${timeLeft}s linear infinite`;
+        }
+
+        function checkAnswer(questionNumber, answer) {
+            clearInterval(timer);
+            let endTime = new Date().getTime();
+            let timeTaken = (endTime - startTime) / 1000;
+
+            if (timeTaken < 0) {
+                showTooFast();
+            } else if (answer === correctAnswers[questionNumber]) {
+                if (questionNumber < 10) {
+                    document.getElementById(`q${questionNumber}`).classList.remove('active');
+                    document.getElementById(`q${questionNumber + 1}`).classList.add('active');
+                    currentQuestion++;
+                    startTimer();
+                } else {
+                    document.getElementById('quiz').style.display = 'none';
+                    document.getElementById('congratulations').style.display = 'block';
+                }
+            } else {
+                showWrongAnswer();
+            }
+        }
+
+        function showWrongAnswer() {
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('wrong-answer').style.display = 'block';
+            sessionStorage.setItem('authorized', 'false');
+        }
+
+        function showTimeout() {
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('timeout').style.display = 'block';
+            sessionStorage.setItem('authorized', 'false');
+        }
+
+        function showTooFast() {
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('too-fast').style.display = 'block';
+            sessionStorage.setItem('authorized', 'false');
+        }
+
+        function getGift() {
+            window.location.href = 'text.html';
+        }
+    </script>
+</body>
+</html>

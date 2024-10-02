@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生日快樂</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #f3f3f3, #e6e6e6);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        .container {
+            background: rgba(255, 255, 255, 1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 40px;
+            animation: fadeIn 1.5s ease-out;
+            max-width: 400px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 36px;
+            animation: colorChange 3s infinite alternate, bounce 2s ease infinite;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2),
+                         0 0 10px rgba(255,255,255,0.5);
+            letter-spacing: 0.1em; /* 增加字距 */
+        }
+
+        @keyframes colorChange {
+            0% { color: #ff4136; }
+            25% { color: #ff851b; }
+            50% { color: #ffdc00; }
+            75% { color: #2ecc40; }
+            100% { color: #0074d9; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) inset;
+        }
+        input:focus {
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5),
+                        0 2px 5px rgba(0, 0, 0, 0.1) inset;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background: #45a049;
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary {
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 28px;
+            }
+            input, button {
+                font-size: 14px;
+            }
+        }
+
+        /* 新增彈出畫面樣式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .error-icon {
+            font-size: 48px;
+            color: #FF4136;
+            margin-bottom: 10px;
+        }
+        .error-message {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>生日快樂</h1>
+        <div class="input-group">
+            <input type="password" id="passwordInput" placeholder="輸入密碼">
+            <button onclick="checkPassword()">➔</button>
+        </div>
+        <p style="font-size: 12px; color: #666; text-align: center; margin-top: 20px; line-height: 1.5; font-weight: 500;">
+            每個人都會拿到專屬於自己的密碼<br>
+            不要把密碼流出去<br>
+        </p>
+    </div>
+
+    <!-- 新增彈出畫面 -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <i class="fas fa-exclamation-triangle error-icon"></i>
+            <p class="error-message">
+                密 碼 錯 誤 ！<br><br>
+                今 天 不 是 你 生 日 ！</p>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const password = urlParams.get('password');
+
+            if (password) {
+                document.getElementById('passwordInput').value = password;
+            }
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === '123') {
+                sessionStorage.setItem('authorized', 'true');
+                window.location.href = 'text.html';
+            } else if (password === '1234') {
+                sessionStorage.setItem('authorized', 'true');
+                window.location.href = 'question.html';
+            } else if (password === 'xlyHb0Ep7kSVAvNKvE7WVXzwpkxWfS4wTDj4X0yYty52Niqgzf') {
+                sessionStorage.setItem('authorized', 'true');
+                window.location.href = 'chien_wen_te/question.html';
+            } else {
+                showErrorModal();
+            }
+        }
+
+        // 顯示錯誤彈出畫面
+        function showErrorModal() {
+            var modal = document.getElementById("errorModal");
+            modal.style.display = "block";
+
+            var span = document.getElementsByClassName("close")[0];
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
