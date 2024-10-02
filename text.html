@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>信件</title>
+    <script>
+        if (sessionStorage.getItem('authorized') !== 'true') {
+            window.location.href = 'index.html';
+        }
+    </script>
+    <style>
+        @font-face {
+            font-family: 'ChenYuluoyan-Thin-Monospaced';
+            src: url('/font/ChenYuluoyan-Thin-Monospaced.woff') format('woff');
+        }
+        body, html {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            background: #f5f5f5;
+            font-family: 'ChenYuluoyan-Thin-Monospaced', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 18px;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        .envelope {
+            margin-top: 20px;
+            background: white;
+            max-width: 1000px;
+            width: 90%;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 1s ease;
+            box-sizing: border-box;
+        }
+        .envelope.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            font-size: 2em;
+        }
+        p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 1.3em;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: right;
+            font-style: italic;
+            color: #999;
+        }
+        .photo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .photo {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .photo:hover {
+            transform: scale(1.05);
+        }
+        @media (max-width: 768px) {
+            .envelope {
+                max-width: 360px;
+                padding: 30px;
+                margin-top: 20px;
+            }
+            h2 {
+                font-size: 1.8em;
+            }
+            p {
+                font-size: 1.2em;
+            }
+        }
+        @media (max-width: 480px) {
+            .envelope {
+                width: 90%;
+                padding: 20px;
+                margin-top: 20px;
+            }
+            h2 {
+                font-size: 1.6em;
+            }
+            p {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="envelope">
+        <h2>Hi 文得得得：</h2>
+        <p>
+            <br>
+            今天是你生日ㄟ<br>
+            所以我決定做一個網站送給你<br>
+            啊你是第一個用這個東東的人<br>
+            如果有很多Bug我也是沒辦法<br>
+            sorry~~<br>
+            <br>
+            祝你生日快樂啦啦啦啦<br>
+            很高興能夠遇到你<br>
+            雖然不知道你是怎麼想的<br>
+            反正我覺得自己很幸運<br>
+            跟你聊天很開心我很開心哦<br>
+            <br>
+            還有<br>
+            身體還是要顧一下啦！<br>
+            一直喝酒會變胖ㄟㄟㄟㄟ<br>
+            雖然我說這個很沒有說服力就是了😅<br>
+            <br>
+            不想講肉麻的話<br>
+            但是我很愛你哦~ 😍<br>
+            <br>
+            機車駕照要考過ㄟ<br>
+            不然要怎麼來載我？<br>
+        </p>
+        <div class="photo-container">
+            <img src="photos/1.jpg" alt="照片1" class="photo">
+            <img src="photos/2.jpg" alt="照片2" class="photo">
+            <img src="photos/3.jpg" alt="照片3" class="photo">
+        </div>
+        <style>
+            .photo-container {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+            }
+            .photo {
+                width: 30%;
+                max-width: 200px;
+            }
+            @media (max-width: 768px) {
+                .photo-container {
+                    flex-direction: column;
+                }
+                .photo {
+                    width: 80%;
+                    margin-bottom: 20px;
+                }
+            }
+        </style>
+        <div class="footer">
+            <p>張恩睿睿睿</p>
+            <p>2024.10.11</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                document.querySelector('.envelope').classList.add('show');
+            }, 500);
+        });
+    </script>
+</body>
+</html>
