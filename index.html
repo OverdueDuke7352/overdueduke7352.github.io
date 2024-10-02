@@ -193,13 +193,7 @@
 
         function checkPassword() {
             const password = document.getElementById('passwordInput').value;
-            if (password === '123') {
-                sessionStorage.setItem('authorized', 'true');
-                window.location.href = 'text.html';
-            } else if (password === '1234') {
-                sessionStorage.setItem('authorized', 'true');
-                window.location.href = 'question.html';
-            } else if (password === 'xlyHb0Ep7kSVAvNKvE7WVXzwpkxWfS4wTDj4X0yYty52Niqgzf') {
+            if (password === 'xlyHb0Ep7kSVAvNKvE7WVXzwpkxWfS4wTDj4X0yYty52Niqgzf') {
                 sessionStorage.setItem('authorized', 'true');
                 window.location.href = 'chien_wen_te/question.html';
             } else {
