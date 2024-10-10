@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>信件</title>
     <script>
         if (sessionStorage.getItem('authorized') !== 'true') {
@@ -72,30 +73,44 @@
             color: #999;
         }
 
+        .photo-container-wrapper {
+            width: 100%;
+            overflow-x: scroll;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
         .photo-container {
+            display: -webkit-box;
+            display: -webkit-flex;
             display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            gap: 20px;
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: row;
+            flex-direction: row;
+            -webkit-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+            gap: 10px;
+            padding: 10px 0;
         }
 
         .photo {
-            width: calc(33.33% - 20px);
-            max-width: 250px;
+            -webkit-box-flex: 0;
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 80vw;
+            max-width: 300px;
             height: auto;
+            -webkit-aspect-ratio: 1 / 1;
+            aspect-ratio: 1 / 1;
+            -o-object-fit: cover;
             object-fit: cover;
-            margin-bottom: 20px;
         }
 
-        @media (max-width: 768px) {
+        @media (min-width: 768px) {
             .photo {
-                width: calc(50% - 20px);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .photo {
-                width: 100%;
+                width: 250px;
             }
         }
 
@@ -198,49 +213,18 @@
         </p>
         <div class="photo-container-wrapper">
             <div class="photo-container">
-                <img src="photos/1.jpg" alt="照片1" class="photo" loading="lazy">
-                <img src="photos/2.jpg" alt="照片2" class="photo" loading="lazy">
-                <img src="photos/3.jpg" alt="照片3" class="photo" loading="lazy">
-                <img src="photos/4.jpg" alt="照片4" class="photo" loading="lazy">
-                <img src="photos/5.jpg" alt="照片5" class="photo" loading="lazy">
-                <img src="photos/6.jpg" alt="照片6" class="photo" loading="lazy">
-                <img src="photos/7.jpg" alt="照片7" class="photo" loading="lazy">
-                <img src="photos/8.jpg" alt="照片8" class="photo" loading="lazy">
-                <img src="photos/9.jpg" alt="照片9" class="photo" loading="lazy">
-                <img src="photos/10.jpg" alt="照片10" class="photo" loading="lazy">
+                <img data-src="photos/1.jpg" alt="照片1" class="photo">
+                <img data-src="photos/2.jpg" alt="照片2" class="photo">
+                <img data-src="photos/3.jpg" alt="照片3" class="photo">
+                <img data-src="photos/4.jpg" alt="照片4" class="photo">
+                <img data-src="photos/5.jpg" alt="照片5" class="photo">
+                <img data-src="photos/6.jpg" alt="照片6" class="photo">
+                <img data-src="photos/7.jpg" alt="照片7" class="photo">
+                <img data-src="photos/8.jpg" alt="照片8" class="photo">
+                <img data-src="photos/9.jpg" alt="照片9" class="photo">
+                <img data-src="photos/10.jpg" alt="照片10" class="photo">
             </div>
         </div>
-        <style>
-            .photo-container-wrapper {
-                width: 100%;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
-            }
-
-            .photo-container {
-                display: flex;
-                flex-wrap: nowrap;
-                gap: 10px;
-                padding: 10px 0;
-            }
-
-            .photo {
-                flex: 0 0 auto;
-                width: 80vw;
-                max-width: 300px;
-                height: auto;
-                aspect-ratio: 1 / 1;
-                object-fit: cover;
-            }
-
-            @media (min-width: 768px) {
-                .photo {
-                    width: 250px;
-                }
-            }
-        </style>
         <div class="footer">
             <p>張恩睿睿睿</p>
             <p>2024.10.11</p>
@@ -261,6 +245,44 @@
                     envelope.classList.add('show');
                 }, 500);
             });
+
+            lazyLoadImages();
+        });
+
+        function lazyLoadImages() {
+            const images = document.querySelectorAll('.photo');
+            const options = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src || img.src;
+                        observer.unobserve(img);
+                    }
+                });
+            }, options);
+
+            images.forEach(img => {
+                if (!img.dataset.src) {
+                    img.dataset.src = img.src;
+                    img.src = '';
+                }
+                observer.observe(img);
+            });
+        }
+
+        function handleImageError(img) {
+            console.error('图片加载失败:', img.src);
+            img.style.display = 'none';
+        }
+
+        document.querySelectorAll('.photo').forEach(img => {
+            img.onerror = () => handleImageError(img);
         });
     </script>
 </body>
