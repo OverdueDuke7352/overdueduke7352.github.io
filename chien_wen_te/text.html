@@ -198,16 +198,16 @@
         </p>
         <div class="photo-container-wrapper">
             <div class="photo-container">
-                <img src="photos/1.jpg" alt="照片1" class="photo">
-                <img src="photos/2.jpg" alt="照片2" class="photo">
-                <img src="photos/3.jpg" alt="照片3" class="photo">
-                <img src="photos/4.jpg" alt="照片4" class="photo">
-                <img src="photos/5.jpg" alt="照片5" class="photo">
-                <img src="photos/6.jpg" alt="照片6" class="photo">
-                <img src="photos/7.jpg" alt="照片7" class="photo">
-                <img src="photos/8.jpg" alt="照片8" class="photo">
-                <img src="photos/9.jpg" alt="照片9" class="photo">
-                <img src="photos/10.jpg" alt="照片10" class="photo">
+                <img src="photos/1.jpg" alt="照片1" class="photo" loading="lazy">
+                <img src="photos/2.jpg" alt="照片2" class="photo" loading="lazy">
+                <img src="photos/3.jpg" alt="照片3" class="photo" loading="lazy">
+                <img src="photos/4.jpg" alt="照片4" class="photo" loading="lazy">
+                <img src="photos/5.jpg" alt="照片5" class="photo" loading="lazy">
+                <img src="photos/6.jpg" alt="照片6" class="photo" loading="lazy">
+                <img src="photos/7.jpg" alt="照片7" class="photo" loading="lazy">
+                <img src="photos/8.jpg" alt="照片8" class="photo" loading="lazy">
+                <img src="photos/9.jpg" alt="照片9" class="photo" loading="lazy">
+                <img src="photos/10.jpg" alt="照片10" class="photo" loading="lazy">
             </div>
         </div>
         <style>
@@ -215,29 +215,34 @@
                 width: 100%;
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            .photo-container-wrapper::-webkit-scrollbar {
+                display: none;
             }
 
             .photo-container {
                 display: flex;
                 flex-wrap: nowrap;
-                gap: 20px;
-                padding: 20px 0;
+                gap: 10px;
+                padding: 10px 0;
             }
 
             .photo {
                 flex: 0 0 auto;
-                width: 250px;
-                height: 250px;
+                width: 80vw;
+                max-width: 300px;
+                height: auto;
+                aspect-ratio: 1 / 1;
                 object-fit: cover;
             }
 
-            /* 隱藏滾動條但保留功能 */
-            .photo-container-wrapper::-webkit-scrollbar {
-                display: none;
-            }
-            .photo-container-wrapper {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
+            @media (min-width: 768px) {
+                .photo {
+                    width: 250px;
+                }
             }
         </style>
         <div class="footer">
