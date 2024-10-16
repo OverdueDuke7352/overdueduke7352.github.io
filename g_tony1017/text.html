@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>信件</title>
+    <script>
+        if (sessionStorage.getItem('authorized') !== 'true') {
+            window.location.href = 'index.html';
+        }
+    </script>
+    <style>
+        @font-face {
+            font-family: 'ChenYuluoyan-Thin-Monospaced';
+            src: url('/font/ChenYuluoyan-Thin-Monospaced.woff') format('woff');
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@700&display=swap');
+
+        body,
+        html {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            background: #f5f5f5;
+            font-family: 'ChenYuluoyan-Thin-Monospaced', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 18px;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .envelope {
+            margin-top: 20px;
+            background: white;
+            max-width: 1000px;
+            width: 90%;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 1s ease;
+            box-sizing: border-box;
+        }
+
+        .envelope.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            font-size: 2em;
+            font-family: "Noto Sans TC", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 1.3em;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: right;
+            font-style: italic;
+            color: #999;
+        }
+
+        .photo-container-wrapper {
+            width: 100%;
+            overflow-x: scroll;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .photo-container {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: row;
+            flex-direction: row;
+            -webkit-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        .photo {
+            -webkit-box-flex: 0;
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 80vw;
+            max-width: 300px;
+            height: auto;
+            -webkit-aspect-ratio: 1 / 1;
+            aspect-ratio: 1 / 1;
+            -o-object-fit: cover;
+            object-fit: cover;
+        }
+
+        @media (min-width: 768px) {
+            .photo {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .envelope {
+                max-width: 360px;
+                padding: 30px;
+                margin-top: 20px;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+
+            p {
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .envelope {
+                width: 90%;
+                padding: 20px;
+                margin-top: 20px;
+            }
+
+            h2 {
+                font-size: 1.6em;
+            }
+
+            p {
+                font-size: 1.1em;
+            }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #333;
+            border-top: 5px solid #f5f5f5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <div class="envelope">
+        <h2>To 挺硬寶貝：</h2>
+        <p>
+            不行ㄟ 我跟你的英文真的都太爛了<br>
+            還有黃ㄅ羊也是<br>
+            都給我去讀書<br>
+            <br>
+            然後蛋糕我太晚買了<br>
+            衝過去的時候已經關門了<br>
+            明天再補給你 啊哈哈哈哈哈<br>
+            <br>
+            幹我怎麼會跟這麼怪的人當朋友<br>
+            你也是<br>
+            怎麼會有辦法跟這麼怪的人當朋友<br>
+            好奇怪<br>
+            <br>
+            蛤你以為會有很肉麻的話嗎？<br>
+            吃屎吧怎麼可能有呢？<br>
+            我對你講不出這種話的啦<br>
+            不要太難過ㄟ<br>
+            <br>
+            好啦你都成年了<br>
+            應該要做一點不一樣的事情吧？<br>
+            <br>
+            再等我一下<br>
+            下個禮拜就換我了嘿嘿ㄟ<br>
+            嘿嘿嘿嘿ㄟ嘿嘿<br>
+            等我😘<br>
+            <br>
+            然後<br>
+            祝你跟我下一次英文要考好<br>
+            祝你早日遇到新的女友（男友也是）<br>
+            祝你駕照一次考過！！！<br>
+            然後要載我出去玩！！！！<br>
+            <br>
+            還有還有<br>
+            感謝你有陪我去話劇社<br>
+            真的<br>
+            不然話劇社真的好無聊<br>
+            謝謝 愛你💕<br>
+            <br>
+        </p>
+        <div class="photo-container-wrapper">
+            <div class="photo-container">
+                <img data-src="photos/1.jpg" alt="照片1" class="photo">
+                <img data-src="photos/2.jpg" alt="照片2" class="photo">
+                <img data-src="photos/3.jpg" alt="照片3" class="photo">
+                <img data-src="photos/4.jpg" alt="照片4" class="photo">
+                <img data-src="photos/5.jpg" alt="照片5" class="photo">
+                <img data-src="photos/6.jpg" alt="照片6" class="photo">
+                <img data-src="photos/7.jpg" alt="照片7" class="photo">
+                <img data-src="photos/8.jpg" alt="照片8" class="photo">
+            </div>
+        </div>
+        <div class="footer">
+            <p>張恩睿睿睿</p>
+            <p>2024.10.17</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loadingOverlay = document.querySelector('.loading-overlay');
+            const envelope = document.querySelector('.envelope');
+
+            // 检查字体是否已加载
+            document.fonts.ready.then(() => {
+                // 隐藏加载动画
+                loadingOverlay.style.display = 'none';
+                // 显示信封内容
+                setTimeout(() => {
+                    envelope.classList.add('show');
+                }, 500);
+            });
+
+            lazyLoadImages();
+        });
+
+        function lazyLoadImages() {
+            const images = document.querySelectorAll('.photo');
+            const options = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src || img.src;
+                        observer.unobserve(img);
+                    }
+                });
+            }, options);
+
+            images.forEach(img => {
+                if (!img.dataset.src) {
+                    img.dataset.src = img.src;
+                    img.src = '';
+                }
+                observer.observe(img);
+            });
+        }
+
+        function handleImageError(img) {
+            console.error('图片加载失败:', img.src);
+            img.style.display = 'none';
+        }
+
+        document.querySelectorAll('.photo').forEach(img => {
+            img.onerror = () => handleImageError(img);
+        });
+    </script>
+</body>
+
+</html>
