@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>信件</title>
+    <script>
+        if (sessionStorage.getItem('authorized') !== 'true') {
+            window.location.href = 'index.html';
+        }
+    </script>
+    <style>
+        @font-face {
+            font-family: 'ChenYuluoyan-Thin-Monospaced';
+            src: url('/font/ChenYuluoyan-Thin-Monospaced.woff') format('woff');
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@700&display=swap');
+
+        body,
+        html {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            background: #f5f5f5;
+            font-family: 'ChenYuluoyan-Thin-Monospaced', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 18px;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .envelope {
+            margin-top: 20px;
+            background: white;
+            max-width: 1000px;
+            width: 90%;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 1s ease;
+            box-sizing: border-box;
+        }
+
+        .envelope.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            font-size: 2em;
+            font-family: "Noto Sans TC", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 1.3em;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: right;
+            font-style: italic;
+            color: #999;
+        }
+
+        .photo-container-wrapper {
+            width: 100%;
+            overflow-x: scroll;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .photo-container {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: row;
+            flex-direction: row;
+            -webkit-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        .photo {
+            -webkit-box-flex: 0;
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            width: 80vw;
+            max-width: 300px;
+            height: auto;
+            -webkit-aspect-ratio: 1 / 1;
+            aspect-ratio: 1 / 1;
+            -o-object-fit: cover;
+            object-fit: cover;
+        }
+
+        @media (min-width: 768px) {
+            .photo {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .envelope {
+                max-width: 360px;
+                padding: 30px;
+                margin-top: 20px;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+
+            p {
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .envelope {
+                width: 90%;
+                padding: 20px;
+                margin-top: 20px;
+            }
+
+            h2 {
+                font-size: 1.6em;
+            }
+
+            p {
+                font-size: 1.1em;
+            }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #333;
+            border-top: 5px solid #f5f5f5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <div class="envelope">
+        <h2>HI~ 鈞維維維</h2>
+        <p>
+            ㄟˋ這裡還有一張卡片啦！<br>
+            啊哈哈哈哈哈哈哈哈<br>
+            生日隔天放颱風假是真的有爽到<br>
+            <br>
+            會拉小提琴又會彈鋼琴<br>
+            而且又彈的超好 根本專業等級<br>
+            你根本就是音樂家吧？？？<br>
+            完全來錯地方了吧啊哈哈哈哈<br>
+            <br>
+            ㄟˋ我真的<br>
+            不知道<br>
+            為什麼你的照片這麼少ㄟˋ<br>
+            我怎麼印象中拍了很多<br>
+            但剛剛翻硬碟卻只有這幾張<br>
+            ？？？？ 啊 原來是我肚子太餓<br>
+            所以照片被我吃掉了啦<br>
+            <br><br>
+
+            恭喜你18歲生日啦<br>
+            雖然有點晚了但還是祝你生日快樂<br>
+            要做什麼事都要趕快做一做才行<br>
+            不然過了之後就沒有機會了哦<br>
+            <br>
+            祝你學測就上ㄟˋ<br>
+            啊反正你一定可以的啦<br>
+            加油！！！<br>
+            <br>
+        </p>
+        <div class="photo-container-wrapper">
+            <div class="photo-container">
+                <img data-src="photos/1.jpg" alt="照片1" class="photo">
+                <img data-src="photos/2.jpg" alt="照片2" class="photo">
+                <img data-src="photos/3.jpg" alt="照片3" class="photo">
+                <img data-src="photos/4.jpg" alt="照片4" class="photo">
+            </div>
+        </div>
+        <div class="footer">
+            <p>張恩睿睿睿</p>
+            <p>2024.10.30</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loadingOverlay = document.querySelector('.loading-overlay');
+            const envelope = document.querySelector('.envelope');
+
+            // 检查字体是否已加载
+            document.fonts.ready.then(() => {
+                // 隐藏加载动画
+                loadingOverlay.style.display = 'none';
+                // 显示信封内容
+                setTimeout(() => {
+                    envelope.classList.add('show');
+                }, 500);
+            });
+
+            lazyLoadImages();
+        });
+
+        function lazyLoadImages() {
+            const images = document.querySelectorAll('.photo');
+            const options = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src || img.src;
+                        observer.unobserve(img);
+                    }
+                });
+            }, options);
+
+            images.forEach(img => {
+                if (!img.dataset.src) {
+                    img.dataset.src = img.src;
+                    img.src = '';
+                }
+                observer.observe(img);
+            });
+        }
+
+        function handleImageError(img) {
+            console.error('图片加载失败:', img.src);
+            img.style.display = 'none';
+        }
+
+        document.querySelectorAll('.photo').forEach(img => {
+            img.onerror = () => handleImageError(img);
+        });
+    </script>
+</body>
+
+</html>
